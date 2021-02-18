@@ -1,13 +1,15 @@
 <template>
-  <h2>个人</h2>
+  <div class="goods">
+
+  </div>
 </template>
 
 <script>
   export default {
-    name: "Profile",
-  };
+    name:"GoodsList"
+  }
 </script>
 
-<style scoped>
+<style>
 
 </style>
