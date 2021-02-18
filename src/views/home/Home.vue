@@ -6,8 +6,10 @@
     <feature-view></feature-view>
     <tab-control
       class="tab-control"
-      :titles="['流行', '新款', '精选']">
+        :titles="['流行', '新款', '精选']" 
+        @tabClick="tabClick">
     </tab-control>
+    <goods-list :goods="showGoods"></goods-list>
     <ul>
       <li>列表1</li>
       <li>列表2</li>
@@ -70,6 +72,7 @@ import FeatureView from "./childComps/FeatureView";
 
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
+import GoodsList from "components/content/goods/GoodsList"
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
@@ -81,6 +84,7 @@ export default {
     FeatureView,
     NavBar,
     TabControl,
+    GoodsList
   },
   data() {
     return {
@@ -91,7 +95,13 @@ export default {
         'new': { page: 0, list: [] },
         'sell': { page: 0, list: [] },
       },
+      currentType:'pop'
     };
+  },
+  computed:{
+    showGoods() {
+      return this.goods[this.currentType].list
+    }
   },
   created() {
     // created一般执行主要逻辑
@@ -104,6 +114,26 @@ export default {
     this.getHomeGoods('sell');
   },
   methods: {
+    /**
+     * 事件监听相关的方法
+     */
+    tabClick(index) {
+      switch (index) {
+        case 0:
+          this.currentType = 'pop'
+          break
+        case 1:
+          this.currentType = 'new'
+          break
+        case 2:
+          this.currentType = 'sell'
+          break
+      }
+    },
+
+    /**
+     * 网络请求相关的方法
+     */
     // methods 一般定义一些具体做的事情
     getHomeMultidata() {
       getHomeMultidata().then((res) => {
@@ -141,6 +171,7 @@ export default {
   .tab-control {
     position: sticky;
     top: 44px;
+    z-index: 9;
   }
 </style>
 
