@@ -1,18 +1,17 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <scroll class="content">
-      <home-swiper :banners="banners"></home-swiper>
-      <recommend-view :recommends="recommends"></recommend-view>
-      <feature-view></feature-view>
+
+    <scroll class="content" ref="scroll">
+      <home-swiper :banners="banners"/>
       <tab-control
           class="tab-control"
           :titles="['流行', '新款', '精选']" 
-          @tabClick="tabClick">
-      </tab-control>
-      <goods-list :goods="showGoods"></goods-list>
+          @tabClick="tabClick"/>
+      <goods-list :goods="showGoods"/>
     </scroll>
 
+    <back-top @click.native="backClick"/>
   </div>
 </template>
 
@@ -25,6 +24,7 @@ import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList"
 import  Scroll from "components/common/scroll/Scroll"
+import BackTop from "components/content/backTop/BackTop"
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
@@ -37,7 +37,8 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
-    Scroll
+    Scroll,
+    BackTop
   },
   data() {
     return {
@@ -82,6 +83,9 @@ export default {
           this.currentType = 'sell'
           break
       }
+    },
+    backClick() {
+      this.$refs.scroll.scrollTo(0, 0)
     },
 
     /**
