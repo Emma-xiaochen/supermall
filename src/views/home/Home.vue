@@ -3,8 +3,8 @@
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
     <tab-control :titles="['流行', '新款', '精选']" 
                     @tabClick="tabClick" 
-                    ref="tabControl"
-                    class="tab-control" v-show="isTabFixed"/>
+                    ref="tabControl1"
+                    class="tab-control1" v-show="isTabFixed"/>
     <scroll class="content" 
             ref="scroll" 
             :probe-type="3" 
@@ -14,7 +14,7 @@
       <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
       <tab-control :titles="['流行', '新款', '精选']" 
                     @tabClick="tabClick" 
-                    ref="tabControl"/>
+                    ref="tabControl2"/>
       <goods-list :goods="showGoods"/>
     </scroll>
 
@@ -60,13 +60,25 @@ export default {
       currentType:'pop',
       isShowBackTop: false,
       tabOffsetTop: 0,
-      isTabFixed: false
+      isTabFixed: false,
+      saveY: 0
     };
   },
   computed:{
     showGoods() {
       return this.goods[this.currentType].list
     }
+  },
+  destroyed() {
+    console.log('home destroyed');
+  },
+  activated() {
+    this.$refs.scroll.scrollTo(0,this.saveY, 0)
+    this.$refs.scroll.refresh()
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.getScrollY()
+    console.log(this.saveY);
   },
   created() {
     // created一般执行主要逻辑
@@ -89,7 +101,6 @@ export default {
     /**
      * 事件监听相关的方法
      */
-    // 刷新拼房的防抖函数处理
     tabClick(index) {
       switch (index) {
         case 0:
@@ -102,6 +113,8 @@ export default {
           this.currentType = 'sell'
           break
       }
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
     backClick() {
       this.$refs.scroll.scrollTo(0, 0)
@@ -137,7 +150,7 @@ export default {
       this.getHomeGoods(this.currentType)
     },
     swiperImageLoad() {
-      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
+      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
     },
   },
 };
