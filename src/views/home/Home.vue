@@ -30,6 +30,7 @@ import  Scroll from "components/common/scroll/Scroll"
 import BackTop from "components/content/backTop/BackTop"
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
+import {debounce} from "common/utils"
 
 export default {
   name: "Home",
@@ -73,15 +74,16 @@ export default {
   },
   mounted() {
     // 3. 监听item里的图片加载完成
+    const refresh = debounce(this.$refs.scroll.refresh,200)
     this.$bus.$on('itemImageLoad',() => {
-      this.$refs.scroll.refresh()
-      console.log('---------');
+      refresh()
     })
   },
   methods: {
     /**
      * 事件监听相关的方法
      */
+    // 刷新拼房的防抖函数处理
     tabClick(index) {
       switch (index) {
         case 0:

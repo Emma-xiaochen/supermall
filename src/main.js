@@ -10,3 +10,15 @@ new Vue({
   render: h => h(App),
   router,
 }).$mount('#app')
+
+
+
+// console.log('aaaa');
+
+// setTimeout(() => {
+//   console.log('bbbb');
+// })
+
+// console.log('cccc');
+
+// aaaa -> cccc-> bbbb
