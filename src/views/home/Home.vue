@@ -6,7 +6,8 @@
             ref="scroll" 
             :probe-type="3" 
             @scroll="contentScroll"
-            :pull-up-load="true">
+            :pull-up-load="true"
+            @pullingUp="loadMore">
       <home-swiper :banners="banners"/>
       <tab-control class="tab-control"
                   :titles="['流行', '新款', '精选']" 
@@ -118,8 +119,14 @@ export default {
       getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list)
         this.goods[type].page += 1
+
+        // 完成上拉加载更多
+        this.$refs.scroll.finishPullUp()
       });
     },
+    loadMore() {
+      this.getHomeGoods(this.currentType)
+    }
   },
 };
 </script>

@@ -14,18 +14,23 @@ export default {
   name:"Scroll",
   data(){
     return {
-      scroll:null
+      scroll: null
     }
   },
   props: {
     probeType: {
       type: Number,
       default: 0
+    },
+    pullUpLoad:{
+      // 上拉加载更多
+      type: Boolean,
+      default: false
     }
   },
   mounted() {
     // 1. 创建BScroll对象 
-    this.scroll = new BScroll(this.$refs.wrapper,{
+    this.scroll = new BScroll(this.$refs.wrapper, {
       click:true,
       probeType: this.probeType,
       pullUpLoad: this.pullUpLoad
@@ -36,16 +41,25 @@ export default {
       // console.log(position);
       this.$emit('scroll', position)
     })
+
+    // 3. 监听scroll滚动到底部
+    if (this.pullUpLoad) {
+      this.scroll.on('pullingUp', () => {
+        // console.log('监听滚动到地步');
+        // 得回调到home.vue(子传父)
+        this.$emit('pullingUp')
+      })
+    }
   },
   methods: {
     scrollTo(x, y, time=500) {
       this.scroll && this.scroll.scrollTo(x, y, time)
     },
-    finishPullUp() {
-      this.scroll.finishPullUp()
-    },
     refresh() {
       this.scroll && this.scroll.refresh()
+    },
+    finishPullUp() {
+      this.scroll && this.scroll.finishPullUp()
     }
   }
 }
