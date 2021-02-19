@@ -1,17 +1,20 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-
+    <tab-control :titles="['流行', '新款', '精选']" 
+                    @tabClick="tabClick" 
+                    ref="tabControl"
+                    class="tab-control" v-show="isTabFixed"/>
     <scroll class="content" 
             ref="scroll" 
             :probe-type="3" 
             @scroll="contentScroll"
             :pull-up-load="true"
             @pullingUp="loadMore">
-      <home-swiper :banners="banners"/>
-      <tab-control class="tab-control"
-                  :titles="['流行', '新款', '精选']" 
-                  @tabClick="tabClick"/>
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
+      <tab-control :titles="['流行', '新款', '精选']" 
+                    @tabClick="tabClick" 
+                    ref="tabControl"/>
       <goods-list :goods="showGoods"/>
     </scroll>
 
@@ -55,7 +58,9 @@ export default {
         'sell': { page: 0, list: [] },
       },
       currentType:'pop',
-      isShowBackTop:false
+      isShowBackTop: false,
+      tabOffsetTop: 0,
+      isTabFixed: false
     };
   },
   computed:{
@@ -74,7 +79,7 @@ export default {
     this.getHomeGoods('sell');
   },
   mounted() {
-    // 3. 监听item里的图片加载完成
+    // 1. 图片加载完成的事件监听
     const refresh = debounce(this.$refs.scroll.refresh,200)
     this.$bus.$on('itemImageLoad',() => {
       refresh()
@@ -102,7 +107,11 @@ export default {
       this.$refs.scroll.scrollTo(0, 0)
     },
     contentScroll(position) {
+      // 1. 判断BackTop是否显示
       this.isShowBackTop = (-position.y) > 1000
+
+      // 2. 决定tabControl是否吸顶(position:fixed)
+      this.isTabFixed = (-position.y) > this.tabOffsetTop
     },
     /**
      * 网络请求相关的方法
@@ -126,14 +135,17 @@ export default {
     },
     loadMore() {
       this.getHomeGoods(this.currentType)
-    }
+    },
+    swiperImageLoad() {
+      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
+    },
   },
 };
 </script>
 
 <style scoped>
   #home {
-    padding-top: 44px;
+    /* padding-top: 44px; */
     height: 100vh;
     position: relative;
   }
@@ -141,25 +153,27 @@ export default {
   .home-nav {
     background-color: var(--color-tint);
     color: #fff;
-    position: fixed;
+
+    /*在使用原生滚动时，为了让导航不跟随一起滚动*/
+    /* position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 9;
-  }
-
-  .tab-control {
-    position: sticky;
-    top: 44px;
-    z-index: 9;
+    z-index: 9; */
   }
 
   .content {
-    /* height: 300px; */
     overflow: hidden;
     position: absolute;
     top: 44px;
     bottom: 49px;
+    left: 0;
+    right: 0;
+  }
+
+  .tab-control {
+    position: relative;
+    z-index: 9;
   }
 
   /* .content {
