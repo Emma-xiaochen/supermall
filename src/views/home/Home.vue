@@ -2,16 +2,19 @@
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
-    <scroll class="content" ref="scroll">
+    <scroll class="content" 
+            ref="scroll" 
+            :probe-type="3" 
+            @scroll="contentScroll"
+            :pull-up-load="true">
       <home-swiper :banners="banners"/>
-      <tab-control
-          class="tab-control"
-          :titles="['流行', '新款', '精选']" 
-          @tabClick="tabClick"/>
+      <tab-control class="tab-control"
+                  :titles="['流行', '新款', '精选']" 
+                  @tabClick="tabClick"/>
       <goods-list :goods="showGoods"/>
     </scroll>
 
-    <back-top @click.native="backClick"/>
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -49,7 +52,8 @@ export default {
         'new': { page: 0, list: [] },
         'sell': { page: 0, list: [] },
       },
-      currentType:'pop'
+      currentType:'pop',
+      isShowBackTop:false
     };
   },
   computed:{
@@ -66,6 +70,13 @@ export default {
     this.getHomeGoods('pop');
     this.getHomeGoods('new');
     this.getHomeGoods('sell');
+  },
+  mounted() {
+    // 3. 监听item里的图片加载完成
+    this.$bus.$on('itemImageLoad',() => {
+      this.$refs.scroll.refresh()
+      console.log('---------');
+    })
   },
   methods: {
     /**
@@ -87,14 +98,15 @@ export default {
     backClick() {
       this.$refs.scroll.scrollTo(0, 0)
     },
-
+    contentScroll(position) {
+      this.isShowBackTop = (-position.y) > 1000
+    },
     /**
      * 网络请求相关的方法
      */
     // methods 一般定义一些具体做的事情
     getHomeMultidata() {
       getHomeMultidata().then((res) => {
-        // this.result = res;
         this.banners = res.data.banner.list;
         this.recommends = res.data.recommend.list;
       });

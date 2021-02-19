@@ -1,5 +1,13 @@
 <template>
   <div class="wrapper" ref="aaaa">
+    <div>
+      <!-- 1. 无论是否设置Click:true,button都可以点击 -->
+      <button @click="btnClick">按钮</button>
+
+      <!-- 2. 必须设置click:true，那么div才能监听点击 -->
+      <!-- <butto @click="divClick">呵呵呵呵</butto> -->
+    </div>
+    
     <ul>
       <button @click="btnClick">按钮</button>
       <li>分类列表1</li>
@@ -128,7 +136,7 @@
       })
 
       this.scroll.on('pullingUp', () => {
-        console.log('上拉加载更多');
+        
       })
     },
     methods:{
