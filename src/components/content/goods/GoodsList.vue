@@ -17,9 +17,11 @@
       GoodsListItem
     },
     props:{
-      goods:Array,
-      default(){
-        return[]
+      goods: {
+        type: Array,
+        default() {
+          return []
+        }
       }
     }
   }

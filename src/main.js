@@ -22,3 +22,23 @@ new Vue({
 // console.log('cccc');
 
 // aaaa -> cccc-> bbbb
+
+// ES6里的继承方法 
+// 继承的都是一些对象
+// class Animal {
+//   run() {
+
+//   }
+// }
+
+// class Rerson extends Animal {
+//   // run() {
+
+//   // }
+// }
+
+// class Dog extends Animal {
+//   // run() {
+
+//   // }
+// }
