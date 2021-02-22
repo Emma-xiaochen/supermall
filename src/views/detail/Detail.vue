@@ -52,8 +52,7 @@
         detailInfo: {},
         paramInfo: {},
         commentInfo: {},
-        recommends: [],
-        itemImgListener: null
+        recommends: []  
       }
     },
     created() {
@@ -90,7 +89,7 @@
       // 3. 请求推荐数据
       getRecommend().then(res => {
         // console.log(res);
-        this.recommends = res.data.list
+        // this.recommends = res.data.list
       })
     },
     methods: {
@@ -122,5 +121,6 @@
 
   .content { 
     height: calc(100% - 44px);
+    background-color: #fff;
   }
 </style>

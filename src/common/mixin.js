@@ -3,7 +3,7 @@ import {debounce} from "common/utils"
 export const itemListenerMixin = {
   data() {
     return {
-      itemImgListener: null
+      itemImgListener: null,
     }
   },
 

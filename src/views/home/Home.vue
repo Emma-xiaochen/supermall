@@ -62,8 +62,7 @@ export default {
       isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
-      saveY: 0,
-      itemImgListener: null
+      saveY: 0
     };
   },
   computed:{
@@ -114,6 +113,7 @@ export default {
           this.currentType = 'sell'
           break
       }
+      // 让两个TabControl的currentIndex保持一致
       this.$refs.tabControl1.currentIndex = index;
       this.$refs.tabControl2.currentIndex = index;
     },
