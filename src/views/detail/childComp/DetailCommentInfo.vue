@@ -104,7 +104,8 @@
   .info-detail .info-other {
     font-size: 12px;
     color: #999;
-    margin-top: 10px;
+    /* margin-top: 10px; */
+    line-height: 1.5;
   }
 
   .info-other .date {

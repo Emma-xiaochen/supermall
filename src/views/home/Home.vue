@@ -17,7 +17,6 @@
                     ref="tabControl2"/>
       <goods-list :goods="showGoods"/>
     </scroll>
-
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
@@ -45,8 +44,7 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
-    Scroll,
-    BackTop
+    Scroll
   },
   mixins: [itemListenerMixin],
   data() {
@@ -59,7 +57,6 @@ export default {
         'sell': { page: 0, list: [] },
       },
       currentType:'pop',
-      isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0
@@ -117,12 +114,9 @@ export default {
       this.$refs.tabControl1.currentIndex = index;
       this.$refs.tabControl2.currentIndex = index;
     },
-    backClick() {
-      this.$refs.scroll.scrollTo(0, 0)
-    },
     contentScroll(position) {
       // 1. 判断BackTop是否显示
-      this.isShowBackTop = (-position.y) > 1000
+      this.listenShowBackTop(position)
 
       // 2. 决定tabControl是否吸顶(position:fixed)
       this.isTabFixed = (-position.y) > this.tabOffsetTop
@@ -137,7 +131,7 @@ export default {
         this.recommends = res.data.recommend.list;
       });
     },
-    getHomeGoods(type) {
+  getHomeGoods(type) {
       const page = this.goods[type].page + 1
       getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list)

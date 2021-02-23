@@ -47,3 +47,14 @@ export class Shop {
     this.goodsCount = shopInfo.cGoods;
   }
 }
+
+// ES6中使用类
+// class Person {
+//   constructor(name, age) {
+//     this.name = name;
+//     this.age = age;
+//   }
+// }
+
+// const p = new Person('why', 18)
+// console.log(p.name);
