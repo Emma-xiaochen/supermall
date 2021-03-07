@@ -6,11 +6,6 @@
             :probe-type="3" 
             @scroll="contentStroll">
       <!-- 属性：topImages 传入值：top-images -->
-      <ul style="width:100%;index:10">
-        <li v-for="item in $store.state.cartList" :key="item.index">
-          {{item}}
-        </li>
-      </ul>
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop" />
@@ -21,6 +16,7 @@
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
     <detail-bottom-bar @addCart="addToCart"/>
+    <toast :message="message" :show="show"/>
   </div>
 </template>
 
@@ -36,11 +32,13 @@
 
   import Scroll from "components/common/scroll/Scroll"
   import GoodsList from "components/content/goods/GoodsList"
-
+  import Toast from "components/common/toast/Toast"
 
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from "network/detail"
   import {itemListenerMixin} from "common/mixin"
   import {debounce} from "common/utils";
+  import {mapActions} from 'vuex'
+
 
 
   export default {
@@ -55,7 +53,8 @@
       DetailCommentInfo,
       DetailBottomBar,
       Scroll,
-      GoodsList
+      GoodsList,
+      Toast
     },
     mixins: [itemListenerMixin],
     data() {
@@ -71,6 +70,8 @@
         themeTopYs: [],
         getThemeTopY: null,
         currentIndex: 0,
+        message: '',
+        show: false
       }
     },
     created() {
@@ -136,7 +137,7 @@
         this.recommends = res.data.list
       })
 
-      // 给getThemeTopY赋值(对给this.themeTopYs赋值的操作进行防抖)
+      // 4.给getThemeTopY赋值(对给this.themeTopYs赋值的操作进行防抖)
       this.getThemeTopY = debounce(() => {
           this.themeTopYs = []
           this.themeTopYs.push(0);
@@ -148,6 +149,7 @@
       }, 100)
     },
     methods: {
+      ...mapActions(['addCart']),
       imageLoad() {
         this.$refs.scroll.refresh()
         this.getThemeTopY()
@@ -160,15 +162,6 @@
         // 1. 获取y值
         const positionY = -position.y
         let length = this.themeTopYs.length
-
-        // 2.positionY和主题中的值进行对比
-        // [0, 5752, 6519, 6851, (Number.MAX_VALUE]
-        // console.log(Number.MAX_VALUE);
-
-        // positionY 在 0 和 5752, index = 0
-        // positionY 在 5752 和 6519, index = 1
-        // positionY 在 6519 和 6851, index = 2
-        // positionY 在 大于等于 6851值时, index = 3
 
         // for(let i = 0; i < length-1; i++) {
         //     if (this.currentIndex !== i && ((i < length - 1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) || (i === length - 1 && positionY >= this.themeTopYs[i]))) {
@@ -197,10 +190,27 @@
         product.price = this.goods.realPrice
         product.iid = this.iid
 
-        // 2. 将商品添加到购物车里
+        // 2. 将商品添加到购物车里(1.Promise、2.mapActions)
         // this.$store.cartList.push(product)
-        // this.$store.commit('addCart', product)
-        this.$store.dispatch('addCart', product)
+        // this.$store.commit('add9Cart', product)
+
+        // 映射actions方法
+        this.addCart(product).then(res => {
+          // this.show = true;
+          // this.message = res;
+
+          // setTimeout(() => {
+          //   this.show = false;
+          //   this.message = ''
+          // }, 1500)
+
+          console.log(this.$toast);
+          this.$toast.show(res, 1000)
+        })
+        
+        // this.$store.dispatch('addCart', product).then(res => {
+        //   console.log(res);
+        // })
       }
     },
     mounted() {
